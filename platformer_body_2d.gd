@@ -60,10 +60,6 @@ func _physics_process(delta: float):
 	
 	self.set_velocity(temp_velocity + delta_v * delta + delta_v_instant);
 	self.move_and_slide();
-	self.queue_redraw();
-
-func _draw() -> void:
-	self.draw_line(Vector2.ZERO, self.velocity * .2, Color.RED);
 
 func set_gravity_multiplier(multiplier: float):
 	self.gravity_multiplier = multiplier;
