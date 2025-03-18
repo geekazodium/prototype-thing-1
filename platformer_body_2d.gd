@@ -1,4 +1,5 @@
 extends CharacterBody2D
+class_name PlatformerPlayerBody2D
 
 @export var horizontal_accel_speed: float;
 @export var max_walk_speed: float;
@@ -9,9 +10,9 @@ extends CharacterBody2D
 var jump_timer: float;
 @export var trailing_jump_buffer: float;
 var ground_timer: float;
-@export var move_left_action: String;
-@export var move_right_action: String;
+@export var input_direction: InputDirection = null;
 @export var jump_input: String;
+var gravity_multiplier: float = 1;
 
 func _process(_delta: float):
 	if Input.is_action_just_pressed(self.jump_input):
@@ -32,18 +33,21 @@ func _physics_process(delta: float):
 	var temp_velocity = self.get_velocity();
 	
 	var delta_v = Vector2(0., 0.);
-	var x_axis = Input.get_axis(self.move_left_action, self.move_right_action);
+	var x_axis = self.input_direction.get_direction().x;
 	if x_axis != 0:
-		var distance_from_max_v = self.max_walk_speed + left.dot(temp_velocity) * x_axis;
+		var distance_from_max_v = self.max_walk_speed * abs(x_axis) + left.dot(temp_velocity) * sign(x_axis);
+		if self.is_on_floor() && (left.dot(temp_velocity) * sign(x_axis) > 0.):
+			delta_v += -temp_velocity.project(left) * self.reverse_boost;
+		
 		if distance_from_max_v > 0.:
 			if distance_from_max_v < self.horizontal_accel_speed * delta :
-				delta_v += -x_axis * left * (distance_from_max_v / delta);
+				delta_v += -sign(x_axis) * left * (distance_from_max_v / delta);
 			else:
-				delta_v += -x_axis * self.horizontal_accel_speed * left;
+				delta_v += -sign(x_axis) * self.horizontal_accel_speed * left;
 	else:
 		if self.is_on_floor():
 			delta_v += -temp_velocity.project(left) * self.reverse_boost;
-	delta_v += self.get_gravity();
+	delta_v += self.get_gravity() * self.gravity_multiplier;
 	delta_v += -temp_velocity * self.air_friction;
 
 	var delta_v_instant = Vector2(0., 0.);
@@ -56,3 +60,13 @@ func _physics_process(delta: float):
 	
 	self.set_velocity(temp_velocity + delta_v * delta + delta_v_instant);
 	self.move_and_slide();
+	self.queue_redraw();
+
+func _draw() -> void:
+	self.draw_line(Vector2.ZERO, self.velocity * .2, Color.RED);
+
+func set_gravity_multiplier(multiplier: float):
+	self.gravity_multiplier = multiplier;
+
+func reset_gravity_multiplier():
+	self.gravity_multiplier = 1;
