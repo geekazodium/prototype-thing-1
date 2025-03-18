@@ -19,4 +19,4 @@ func _physics_process(_delta: float) -> void:
 func reset_after_dash():
 	var character_body: PlatformerPlayerBody2D = self.get_parent();
 	character_body.reset_gravity_multiplier();
-	character_body.velocity *= .5;
+	character_body.velocity *= .4;

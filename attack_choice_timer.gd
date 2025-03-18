@@ -31,8 +31,7 @@ func _physics_process(delta: float) -> void:
 		self.combo_index += 1;
 		attack.play_primary_anim();
 		
-		character.set_gravity_multiplier(0);
-		character.velocity = Vector2.ZERO;
+		character.velocity.y -= 300;
 
 func attack_charged():
 	self.current_attack.play_charged_anim();

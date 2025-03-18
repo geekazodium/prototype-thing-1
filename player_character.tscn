@@ -1,0 +1,186 @@
+[gd_scene load_steps=18 format=3 uid="uid://c2jotwlfhb3bp"]
+
+[ext_resource type="Script" path="res://platformer_body_2d.gd" id="1_twt5a"]
+[ext_resource type="SpriteFrames" uid="uid://cb2x80if4blxi" path="res://jump_sprite_frames.tres" id="2_h53e5"]
+[ext_resource type="Script" path="res://attack_choice_timer.gd" id="3_bx4vt"]
+[ext_resource type="Script" path="res://attack.gd" id="4_dh3xl"]
+[ext_resource type="Script" path="res://eight_direction_dash.gd" id="5_wx8cy"]
+[ext_resource type="Script" path="res://input_direction.gd" id="6_gjm2v"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_hs2qg"]
+animation = &"jump"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4fthv"]
+animation = &"jump"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_pklue"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_kb76x"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_y1qax"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_wnetf"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_83lwo"]
+states/End/position = Vector2(900, 123)
+states/Start/position = Vector2(334, 117)
+states/jump/node = SubResource("AnimationNodeAnimation_4fthv")
+states/jump/position = Vector2(545, 130)
+"states/jump 2/node" = SubResource("AnimationNodeAnimation_hs2qg")
+"states/jump 2/position" = Vector2(545, 49)
+transitions = ["Start", "jump", SubResource("AnimationNodeStateMachineTransition_pklue"), "jump", "End", SubResource("AnimationNodeStateMachineTransition_kb76x"), "jump 2", "jump", SubResource("AnimationNodeStateMachineTransition_y1qax"), "jump", "jump 2", SubResource("AnimationNodeStateMachineTransition_wnetf")]
+
+[sub_resource type="Animation" id="Animation_twgkh"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [1]
+}
+
+[sub_resource type="Animation" id="Animation_n575u"]
+resource_name = "jump"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:frame")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 2, 3, 4, 5]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_3lsct"]
+_data = {
+"RESET": SubResource("Animation_twgkh"),
+"jump": SubResource("Animation_n575u")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_q2at8"]
+radius = 18.0
+height = 60.0
+
+[node name="CharacterBody2D" type="CharacterBody2D" node_paths=PackedStringArray("input_direction")]
+script = ExtResource("1_twt5a")
+horizontal_accel_speed = 1500.0
+max_walk_speed = 250.0
+jump_y_vel = 500.0
+reverse_boost = 10.0
+air_friction = 0.1
+leading_jump_buffer = 0.125
+trailing_jump_buffer = 0.1
+input_direction = NodePath("InputDirection")
+jump_input = "jump"
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_left = -18.0
+offset_top = -31.0
+offset_right = 18.0
+offset_bottom = 31.0
+
+[node name="AnimationTree" type="AnimationTree" parent="."]
+tree_root = SubResource("AnimationNodeStateMachine_83lwo")
+anim_player = NodePath("../AnimationPlayer")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_3lsct")
+}
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+modulate = Color(1, 1, 1, 0.172549)
+scale = Vector2(4, 4)
+sprite_frames = ExtResource("2_h53e5")
+frame = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CapsuleShape2D_q2at8")
+
+[node name="AttackCombo" type="Node2D" parent="." node_paths=PackedStringArray("attack_cooldown_timer", "attack_combo_timer", "charge_timer", "attack_combo")]
+script = ExtResource("3_bx4vt")
+attack_action = "attack"
+attack_cooldown_timer = NodePath("../AttackCooldownTimer")
+attack_combo_timer = NodePath("../AttackComboTimer")
+charge_timer = NodePath("../AttackChargeTimer")
+attack_combo = [NodePath("Attack"), NodePath("Attack2"), NodePath("Attack3")]
+
+[node name="Attack" type="Node2D" parent="AttackCombo"]
+script = ExtResource("4_dh3xl")
+combo_time = 0.4
+cooldown_time = 0.2
+charge_time = 0.3
+charged_combo_extension = 0.3
+
+[node name="Attack2" type="Node2D" parent="AttackCombo"]
+script = ExtResource("4_dh3xl")
+combo_time = 0.4
+cooldown_time = 0.2
+charge_time = 0.3
+charged_combo_extension = 0.3
+
+[node name="Attack3" type="Node2D" parent="AttackCombo"]
+script = ExtResource("4_dh3xl")
+combo_time = 0.4
+cooldown_time = 0.5
+charge_time = 0.4
+
+[node name="AttackCooldownTimer" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
+
+[node name="DashCooldownTimer" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
+
+[node name="AttackChargeTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 0.2
+one_shot = true
+
+[node name="AttackComboTimer" type="Timer" parent="."]
+process_callback = 0
+one_shot = true
+
+[node name="EightDirectionDash" type="Node" parent="." node_paths=PackedStringArray("input_direction", "dash_timer", "dash_cooldown_timer")]
+script = ExtResource("5_wx8cy")
+dash_action = "dash"
+input_direction = NodePath("../InputDirection")
+dash_timer = NodePath("DashTimer")
+dash_cooldown_timer = NodePath("DashCooldownTimer")
+
+[node name="DashTimer" type="Timer" parent="EightDirectionDash"]
+process_callback = 0
+wait_time = 0.15
+one_shot = true
+
+[node name="DashCooldownTimer" type="Timer" parent="EightDirectionDash"]
+wait_time = 0.5
+one_shot = true
+
+[node name="InputDirection" type="Node" parent="."]
+script = ExtResource("6_gjm2v")
+move_left_action = "move_left"
+move_right_action = "move_right"
+move_up_action = "move_up"
+move_down_action = "move_down"
+
+[connection signal="timeout" from="AttackCooldownTimer" to="AttackCombo" method="cooldown_timer_ended"]
+[connection signal="timeout" from="AttackChargeTimer" to="AttackCombo" method="attack_charged"]
+[connection signal="timeout" from="AttackComboTimer" to="AttackCombo" method="combo_timer_ended"]
+[connection signal="timeout" from="EightDirectionDash/DashTimer" to="EightDirectionDash" method="reset_after_dash"]
