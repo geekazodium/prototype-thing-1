@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://hrsrt3kpcbch"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+
+[node name="Label" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 605.0
+offset_bottom = 214.0
+text = "WASD (Direction)
+Space - Jump
+J - Attack
+K + Direction - Dash"

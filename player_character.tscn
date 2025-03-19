@@ -238,7 +238,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0.0333333),
 "transitions": PackedFloat32Array(1),
 "values": [{
-"args": [Vector2(0, -400)],
+"args": [Vector2(0, -200)],
 "method": &"boost"
 }]
 }
@@ -303,15 +303,9 @@ tracks/2/path = NodePath(".")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
 "values": [{
-"args": [Vector2(0, -100)],
-"method": &"boost"
-}, {
-"args": [Vector2(0, -100)],
-"method": &"boost"
-}, {
 "args": [Vector2(0, -100)],
 "method": &"boost"
 }, {
@@ -577,6 +571,29 @@ tracks/4/keys = {
 "method": &"reset_hits"
 }]
 }
+tracks/5/type = "method"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"values": [{
+"args": [Vector2(0, -150)],
+"method": &"boost"
+}, {
+"args": [Vector2(0, -150)],
+"method": &"boost"
+}, {
+"args": [Vector2(0, -150)],
+"method": &"boost"
+}, {
+"args": [Vector2(0, -150)],
+"method": &"boost"
+}]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_vpwdk"]
 _data = {
@@ -592,7 +609,7 @@ _data = {
 [node name="CharacterBody2D" type="CharacterBody2D" node_paths=PackedStringArray("input_direction")]
 script = ExtResource("1_twt5a")
 horizontal_accel_speed = 1500.0
-max_walk_speed = 250.0
+max_walk_speed = 300.0
 jump_y_vel = 500.0
 reverse_boost = 10.0
 air_friction = 0.1
@@ -706,12 +723,13 @@ one_shot = true
 script = ExtResource("5_wx8cy")
 dash_action = "dash"
 input_direction = NodePath("../InputDirection")
+dash_speed = 1200.0
 dash_timer = NodePath("DashTimer")
 dash_cooldown_timer = NodePath("DashCooldownTimer")
 
 [node name="DashTimer" type="Timer" parent="EightDirectionDash"]
 process_callback = 0
-wait_time = 0.15
+wait_time = 0.12
 one_shot = true
 
 [node name="DashCooldownTimer" type="Timer" parent="EightDirectionDash"]

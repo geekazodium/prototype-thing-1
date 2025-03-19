@@ -9,7 +9,7 @@ var combo_index = 0;
 @export var attack_combo: Array[ChargeableAttack] = [];
 var current_attack: ChargeableAttack = null;
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var character: PlatformerPlayerBody2D = self.get_parent();
 	if Input.is_action_just_released(self.attack_action):
 		if !self.charge_timer.is_stopped():
