@@ -31,7 +31,9 @@ func _physics_process(delta: float) -> void:
 		self.combo_index += 1;
 		attack.play_primary_anim();
 		
-		character.velocity.y -= 300;
+func boost(vel: Vector2):
+	var character: PlatformerPlayerBody2D = self.get_parent();
+	character.velocity += vel;
 
 func attack_charged():
 	self.current_attack.play_charged_anim();

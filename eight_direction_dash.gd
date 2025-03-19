@@ -9,7 +9,7 @@ extends Node
 func _physics_process(_delta: float) -> void:
 	if !self.dash_cooldown_timer.is_stopped():
 		return;
-	if Input.is_action_just_pressed(self.dash_action):
+	if Input.is_action_just_pressed(self.dash_action) && self.input_direction.get_direction() != Vector2.ZERO:
 		var character_body: PlatformerPlayerBody2D = self.get_parent();
 		character_body.velocity = self.input_direction.get_direction() * self.dash_speed;
 		character_body.set_gravity_multiplier(0);
