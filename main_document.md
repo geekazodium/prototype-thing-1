@@ -46,6 +46,7 @@ player's ability to be nostolgic?
 #### Emulation?
 
 The player is able to do partial rewinds, of only their position and nothing else?
+the tension between the nostolgia and going back in time is limited by scope and only to yourself?
 
 ### Primary Mechanics
 
